@@ -1,0 +1,110 @@
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+#general {
+#        colors = true
+#        interval = 5
+#}
+
+general {
+  output_format = "i3bar"
+  colors = true
+  color_good = "#50FA7B"
+  color_degraded = "#F1FA8C"
+  color_bad = "#FF5555"
+  color_custom1 = "#523991"
+}
+
+order += "external_script"
+order += "whatismyip"
+#order += "ethernet _first_"
+#order += "netdata"
+order += "networkmanager"
+order += "net_rate"
+order += "disk /"
+order += "disk /games/"
+order += "disk /home/"
+order += "sysdata"
+order += "tztime local"
+order += "volume_status"
+
+
+ethernet _first_ {
+        format_up = "E: %ip"
+        format_down = "E: down"
+}
+
+netdata {
+	format = "{nic} [\?color=down LAN(Kb): {down}↓ {up}↑] "
+}
+
+net_rate {
+	format = "\?color=total {interface}: D:{down}↓ U:{up}↑"
+	thresholds = {
+		'total': [(0, 'good'), (256000000, 'degraded'), (4096000000, 'bad')],
+		'down': [(0, 'good'), (256000000, 'degraded'), (4096000000, 'bad')],
+		'up': [(0, 'good'), (256000000, 'degraded'), (4096000000, 'bad')]
+		} 
+	unit = 'MB/s'
+}
+
+disk "/" {
+         format = "⛁root: %percentage_used"
+}
+
+disk "/games/" {
+ 	format = "⛁Games: %percentage_used"
+}
+
+disk "/home/" {
+	format = "⛁Home: %percentage_used"
+}
+
+sysdata {
+	cache_timeout = 3
+	format = "CPU: [\?color=cpu {cpu_usage}%] [\?color=mem MEM: {mem_used_percent}%]"
+	format_cpu = "[\?if=used_percent>80 ⡇|[\?if=used_percent>60 ⡆"
+    format_cpu += "|[\?if=used_percent>40 ⡄|[\?if=used_percent>20 ⡀"
+    format_cpu += "|⠀]]]]"
+    format_cpu_separator = ""
+    thresholds = {
+    'cpu': [(0, 'good'), (25, 'degraded'), (80, 'bad')],
+    'mem': [(0, 'good'), (60, 'degraded'), (80, 'bad')],
+  }
+
+}
+
+tztime local {
+        format = "%Y-%m-%d %H:%M:%S"
+}
+
+volume_status {
+	volume_delta = 1
+	cache_timeout = 5
+	format = '[\?if=is_input 😮|♪] {percentage}%'
+	format_muted = '[\?if=is_input 😶|♪] muted'
+}
+
+whatismyip {
+	cache_timeout = 300
+	format = "{ip} {country_iso}"
+	hide_when_offline = true
+}
+
+external_script {
+	script_path = "/home/eliminat/scripts/weather.sh"
+	cache_timeout = 300
+}
+
+networkmanager {
+#    devices = ['e*']    # ethernet only
+#    devices = ['w*']    # wireless only
+#    devices = []        # ethernet, wireless, lo, etc
+
+
+}
